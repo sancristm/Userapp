@@ -11,7 +11,7 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { registerUser } from '../api/userApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -69,6 +69,15 @@ const RegisterForm = () => {
           </Avatar>
           <Typography component='h1' variant='h5'>
             Sign Up
+          </Typography>
+          <Typography variant='body2' align='center' sx={{ mt: 2 }}>
+            Already Registered?{' '}
+            <Link
+              to='/login'
+              style={{ textDecoration: 'none', color: '#3f51b5' }}
+            >
+              Sign in
+            </Link>
           </Typography>
           <Box
             component='form'

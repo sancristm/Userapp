@@ -170,6 +170,18 @@ const ProfilePage = () => {
                     onChange={handleChange}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id='password'
+                    label='Password'
+                    name='password'
+                    type='password'
+                    value={userData.password}
+                    onChange={handleChange}
+                  />
+                </Grid>
               </Grid>
               <Button
                 type='submit'

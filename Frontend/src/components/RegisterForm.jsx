@@ -10,22 +10,36 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+import { registerUser } from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
+
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
   });
+  const navigate = useNavigate(); // Initialize navigate
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add logic to send formData to the backend API
+    try {
+      const { data } = await registerUser(formData);
+      localStorage.setItem('jwt', data.token); // Store the token
+      navigate('/profile'); // Navigate to the profile page
+    } catch (error) {
+      console.error('Error during registration:', error);
+    }
   };
 
   return (
@@ -34,8 +48,8 @@ const RegisterForm = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh', // Full viewport height
-        backgroundColor: '#f5f5f5', // Light background for contrast
+        height: '100vh',
+        backgroundColor: '#f5f5f5',
       }}
     >
       <Container component='main' maxWidth='xs'>
@@ -65,13 +79,13 @@ const RegisterForm = () => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  name='username'
+                  name='name'
                   required
                   fullWidth
-                  id='username'
-                  label='Username'
+                  id='name'
+                  label='Name'
                   autoFocus
-                  value={formData.username}
+                  value={formData.name}
                   onChange={handleChange}
                 />
               </Grid>

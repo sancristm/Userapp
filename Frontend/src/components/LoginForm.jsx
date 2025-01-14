@@ -9,6 +9,8 @@ import {
   Typography,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { loginUser } from '../api/userApi';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -16,15 +18,23 @@ const LoginForm = () => {
     password: '',
   });
 
+  const navigate = useNavigate(); // Initialize navigate
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login submitted:', formData);
-    // Add logic to send formData to the backend API
+    try {
+      const { data } = await loginUser(formData);
+      localStorage.setItem('jwt', data.token); // Store the token
+      navigate('/profile'); // Redirect to profile page
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('Login failed. Please check your credentials.');
+    }
   };
 
   return (
@@ -56,8 +66,13 @@ const LoginForm = () => {
             Sign In
           </Typography>
           <Typography variant='body2' align='center' sx={{ mt: 2 }}>
-            {' '}
-            Not yet Registered? <a href='/register'>Sign up</a>
+            Not yet Registered?{' '}
+            <Link
+              to='/register'
+              style={{ textDecoration: 'none', color: '#3f51b5' }}
+            >
+              Sign up
+            </Link>
           </Typography>
 
           <Box

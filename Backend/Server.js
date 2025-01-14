@@ -15,6 +15,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+import cors from 'cors';
+app.use(cors());
 
 app.use(cookieParser());
 

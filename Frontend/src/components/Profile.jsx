@@ -12,57 +12,79 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
 
 const ProfilePage = () => {
-  const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-  });
+  const [userData, setUserData] = useState(null); // Store user data or null initially
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   // Fetch user data from the backend
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+          window.location.href = '/login'; // Redirect to login if no token
+          return;
+        }
+
         const { data } = await axios.get('/api/users/profile', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`, // Assuming JWT is stored in localStorage
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setUserData(data);
       } catch (error) {
-        console.error('Error fetching profile data', error);
+        console.error('Error fetching profile data:', error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem('jwt'); // Clear token on unauthorized
+          window.location.href = '/login';
+        }
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchUserProfile();
   }, []);
 
-  // Handle form data changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+    setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Handle profile update
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('jwt');
+      if (!token) return;
+
       const { data } = await axios.put('/api/users/profile', userData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setUserData(data);
-      setIsEditing(false); // Exit editing mode after successful update
+      setIsEditing(false); // Exit editing mode
     } catch (error) {
-      console.error('Error updating profile', error);
+      console.error('Error updating profile:', error);
     }
   };
 
-  // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem('jwt'); // Remove JWT from localStorage
-    window.location.href = '/login'; // Redirect to login page
+    localStorage.removeItem('jwt');
+    window.location.href = '/login';
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          backgroundColor: '#f5f5f5',
+        }}
+      >
+        <Typography variant='h6'>Loading...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -90,42 +112,65 @@ const ProfilePage = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component='h1' variant='h5'>
-            {isEditing ? 'Edit Profile' : 'Profile'}
+            Welcome {userData.name}
           </Typography>
-          <Box
-            component='form'
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id='name'
-                  label='Name'
-                  name='name'
-                  value={userData.name}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
+
+          {/* Show user data */}
+          {!isEditing && userData && (
+            <Box sx={{ mt: 3, textAlign: 'center' }}>
+              <Typography variant='h6'>{userData.name}</Typography>
+              <Typography variant='body1'>{userData.email}</Typography>
+              <Button
+                variant='contained'
+                sx={{ mt: 3 }}
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </Button>
+              <Button
+                variant='outlined'
+                color='error'
+                sx={{ mt: 2 }}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </Box>
+          )}
+
+          {/* Show form for editing */}
+          {isEditing && (
+            <Box
+              component='form'
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 3 }}
+            >
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id='name'
+                    label='Name'
+                    name='name'
+                    value={userData.name}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id='email'
+                    label='Email Address'
+                    name='email'
+                    type='email'
+                    value={userData.email}
+                    onChange={handleChange}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id='email'
-                  label='Email Address'
-                  name='email'
-                  type='email'
-                  value={userData.email}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-              </Grid>
-            </Grid>
-            {isEditing ? (
               <Button
                 type='submit'
                 fullWidth
@@ -134,26 +179,16 @@ const ProfilePage = () => {
               >
                 Save Changes
               </Button>
-            ) : (
               <Button
                 fullWidth
-                variant='contained'
-                sx={{ mt: 3, mb: 2 }}
-                onClick={() => setIsEditing(true)}
+                variant='outlined'
+                sx={{ mb: 2 }}
+                onClick={() => setIsEditing(false)}
               >
-                Edit Profile
+                Cancel
               </Button>
-            )}
-          </Box>
-          <Button
-            fullWidth
-            variant='outlined'
-            color='error'
-            sx={{ mt: 2 }}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
+            </Box>
+          )}
         </Box>
       </Container>
     </Box>

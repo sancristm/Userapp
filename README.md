@@ -50,42 +50,44 @@ This is a full-stack application that allows users to manage their profiles. Use
 
 ### **Setup**
 
-1. Clone the repository:
+1. **Clone the repository:**
+
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/sancristm/Express-Mongo-restful-api.git
+   ```
 
-2. Install dependencies for both frontend and backend:
+2. **Install dependencies for both client and server separately:**
 
-cd frontend
-npm install
-cd ../backend
-npm install
+   ```bash
+   npm install
+   ```
 
+3. **Set up the environment variables:**
+   Create a `.env` file in the root of the project:
 
-3. Create a .env file in the backend directory and add the following:
+   ```env
+   MONGO_URI=
+   PORT=5000
+   ```
 
-PORT=5000
-MONGO_URI=<your-mongodb-connection-string>
-JWT_SECRET=<your-jwt-secret>
+4. **Start the server:**
+   ```bash
+   npm run dev
+   ```
 
+---
 
-4. Start the backend server:
+## **Error Handling**
 
-cd backend
-npm start
+Common error responses for invalid requests.
 
+**Error Example (**User Not Found):**
 
-5. Start the frontend server:
-
-cd frontend
-npm run dev
-
-
-6. Open the application in your browser:
-
-http://localhost:3000
-
+```json
+{
+  "error": "user not found"
+}
+```
 ---
 
 API Endpoints
@@ -100,25 +102,18 @@ Login Flow
 
 1. User logs in by providing their email and password.
 
-
 2. A JWT token is issued upon successful authentication and stored in localStorage.
-
 
 
 ### Profile Management
 
 1. Upon logging in, the app fetches the user's profile data using the /api/users/profile endpoint.
 
-
 2. The data is rendered on the profile page.
-
 
 3. Users can switch to "Edit Mode" to update their name, email, or password.
 
-
 4. Updated data is sent to the backend using the /api/users/profile endpoint.
-
-
 
 ### Logout
 

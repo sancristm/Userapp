@@ -92,32 +92,9 @@ API Endpoints
 
 User Profile Endpoints
 
-
 ---
 
-File Structure
-
-.
-├── frontend/                 # React application
-│   ├── src/
-│   │   ├── components/       # Reusable components
-│   │   ├── pages/            # Application pages
-│   │   └── App.js            # Main App component
-│   └── ...
-├── backend/                  # Express application
-│   ├── controllers/
-│   │   └── userController.js # User-related logic
-│   ├── models/
-│   │   └── userModel.js      # User schema
-│   ├── routes/
-│   │   └── userRoutes.js     # User-related routes
-│   └── server.js             # Entry point
-└── README.md                 # Documentation
-
-
----
-
-How It Works
+## How It Works
 
 Login Flow
 
@@ -128,7 +105,7 @@ Login Flow
 
 
 
-Profile Management
+### Profile Management
 
 1. Upon logging in, the app fetches the user's profile data using the /api/users/profile endpoint.
 
@@ -143,51 +120,27 @@ Profile Management
 
 
 
-Logout
+### Logout
 
 Clicking the "Logout" button removes the JWT token and redirects the user to the login page.
 
-
-
 ---
 
-Error Handling
-
-Frontend
-
-Errors from API calls are caught and displayed to users via Material-UI alerts or text.
-
-
-Backend
-
-Custom error responses are sent for invalid requests or server errors.
-
-
-
----
-
-Future Improvements
-
-Implement password reset functionality.
+## Future Improvements
 
 Add profile image upload support.
 
 Enhance error logging with monitoring tools.
 
-
-
 ---
 
-Contributing
+## Contributing
 
 1. Fork the repository.
 
-
 2. Create a new branch for your feature/fix.
 
-
 3. Commit and push your changes.
-
 
 4. Open a pull request for review.
 

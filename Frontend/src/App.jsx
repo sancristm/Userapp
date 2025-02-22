@@ -1,17 +1,22 @@
-import { Route, Routes } from 'react-router-dom';
-import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
-import ProfilePage from './pages/ProfilePage';
+import Notification from './components/Notification';
+import AdminDashboard from './pages/AdminDashboard';
+import Register from './pages/Register';
 
 function App() {
   return (
-    <Routes>
-      <Route path='/register' element={<RegisterPage />} />
+    <>
+      <Register />
+      <Notification />
 
-      <Route path='/login' element={<LoginPage />} />
+      <AdminDashboard />
+    </>
+    // <Routes>
+    //   <Route path='/register' element={<RegisterPage />} />
 
-      <Route path='/profile' element={<ProfilePage />} />
-    </Routes>
+    //   <Route path='/login' element={<LoginPage />} />
+
+    //   <Route path='/profile' element={<ProfilePage />} />
+    // </Routes>
   );
 }
 

@@ -2,7 +2,9 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
 import bcrypt from 'bcryptjs';
-// @desc    Auth user & get token
+import passport from 'passport';
+
+// @desc    Auth user/ user login  & get token
 // @route   POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
@@ -114,10 +116,24 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 });
+
+// Google OAuth login route
+const googleAuth = passport.authenticate('google', {
+  scope: ['profile', 'email'],
+});
+
+// Google OAuth callback route
+const googleAuthCallback = passport.authenticate('google', {
+  successRedirect: '/api/users/profile',
+  failureRedirect: '/login',
+});
+
 export {
   authUser,
   registerUser,
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  googleAuth,
+  googleAuthCallback,
 };

@@ -6,6 +6,9 @@ import connectDB from './config/db.js';
 import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
+import passport from 'passport';
+import session from 'express-session';
+import './config/passportConfig.js';
 
 const port = process.env.PORT || 5000;
 
@@ -15,10 +18,16 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 import cors from 'cors';
 app.use(cors());
 
 app.use(cookieParser());
+app.use(
+  session({ secret: 'your_secret_key', resave: false, saveUninitialized: true })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/api/users', userRoutes);
 
@@ -38,4 +47,4 @@ if (process.env.NODE_ENV === 'production') {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+app.listen(port, () => console.log(`Server running on port ${port}`));

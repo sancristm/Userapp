@@ -5,6 +5,8 @@ import {
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  googleAuth,
+  googleAuthCallback,
 } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -17,5 +19,9 @@ router
   .route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+// Google OAuth routes
+router.get('/auth/google', googleAuth);
+router.get('/auth/google/callback', googleAuthCallback);
 
 export default router;

@@ -5,23 +5,19 @@ import {
   logoutUser,
   getUserProfile,
   updateUserProfile,
-  googleAuth,
   googleAuthCallback,
 } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', registerUser);
 router.post('/auth', authUser);
+router.post('/', registerUser);
 router.post('/logout', logoutUser);
-router
-  .route('/profile')
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile);
+router.get('/profile', protect, getUserProfile);
+router.put('/profile', protect, updateUserProfile);
 
 // Google OAuth routes
-router.get('/auth/google', googleAuth);
-router.get('/auth/google/callback', googleAuthCallback);
+router.post('/auth/google', googleAuthCallback);
 
 export default router;

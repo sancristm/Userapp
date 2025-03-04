@@ -1,22 +1,11 @@
-import Notification from './components/Notification';
-import AdminDashboard from './pages/AdminDashboard';
-import Register from './pages/Register';
+import GoogleLoginComponent from './components/GoogleLogin';
 
 function App() {
   return (
-    <>
-      <Register />
-      <Notification />
-
-      <AdminDashboard />
-    </>
-    // <Routes>
-    //   <Route path='/register' element={<RegisterPage />} />
-
-    //   <Route path='/login' element={<LoginPage />} />
-
-    //   <Route path='/profile' element={<ProfilePage />} />
-    // </Routes>
+    <div className='App'>
+      <h1>Login with Google</h1>
+      <GoogleLoginComponent />
+    </div>
   );
 }
 

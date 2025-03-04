@@ -62,7 +62,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout
 // @access  Public
-const logoutUser = (req, res) => {
+const logoutUser = (_, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
@@ -122,12 +122,32 @@ const googleAuth = passport.authenticate('google', {
   scope: ['profile', 'email'],
 });
 
-// Google OAuth callback route
-const googleAuthCallback = passport.authenticate('google', {
-  successRedirect: '/api/users/profile',
-  failureRedirect: '/login',
-});
+// Google OAuth callback route - updated to handle JWT token
+const googleAuthCallback = (req, res, next) => {
+  passport.authenticate('google', { session: false }, (err, user) => {
+    if (err) {
+      return next(err);
+    }
 
+    if (!user) {
+      return res.redirect('/login?error=googleAuthFailed');
+    }
+
+    // Generate JWT token
+    generateToken(res, user._id);
+
+    // Redirect to frontend profile page or homepage
+    // You can adjust this URL based on your frontend routes
+    const redirectUrl =
+      process.env.NODE_ENV === 'production'
+        ? '/'
+        : `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dashboard`;
+
+    return res.redirect(redirectUrl);
+  })(req, res, next);
+};
+
+// Export these along with your other controller functions
 export {
   authUser,
   registerUser,

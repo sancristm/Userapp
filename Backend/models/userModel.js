@@ -14,7 +14,10 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        // Only require password for regular sign-ups, not OAuth
+        return !this.googleId;
+      },
     },
     googleId: {
       type: String,
@@ -34,8 +37,9 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 // Encrypt password using bcrypt
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || !this.password) {
     next();
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);
